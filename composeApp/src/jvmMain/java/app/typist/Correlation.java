@@ -296,6 +296,7 @@ public class Correlation extends Object
      */
     public String toString()
     {
-        return null;
+        return String.format("Correlation{collectionX=%s, collectionY=%s, nMinusOne=%s}", 
+                             collectionX, collectionY, nMinusOne);
     }
 }
