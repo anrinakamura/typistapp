@@ -17,72 +17,72 @@ public class Constants extends Object
     /**
      * Defines the tolerance for accuracy.
      */
-    public static Double Accuracy = 0.000000000001d;
+    public static final Double Accuracy = 0.000000000001d;
 
     /**
      * The character encoding scheme.
      */
-    public static String CharacterSet = "UTF-8";
+    public static final String CharacterSet = "UTF-8";
 
     /**
      * The file extension for HTML files.
      */
-    public static String HtmlExtension = ".html";
+    public static final String HtmlExtension = ".html";
 
     /**
      * The image format to be used.
      */
-    public static String ImageFormat = "png";
+    public static final String ImageFormat = "png";
 
     /**
      * The minimum number of characters for the input length.
      */
-    public static Integer MinimumTypingLength = 32;
+    public static final Integer MinimumTypingLength = 32;
 
     /**
      * The maximum number of characters for the input length.
      */
-    public static Integer MaximumTypingLength = 128;
+    public static final Integer MaximumTypingLength = 128;
 
     /**
      * The number of candidates to consider.
      */
-    public static Integer NumberOfCandidates = 16;
+    public static final Integer NumberOfCandidates = 16;
 
     /**
      * The file extension for PNG files.
      */
-    public static String PngExtension = ".png";
+    public static final String PngExtension = ".png";
 
     /**
      * The unit of time for the sleep process, in milliseconds.
      */
-    public static Integer SleepTick = 5;
+    public static final Integer SleepTick = 5;
 
     /**
      * The HTML header.
      */
-    public static String TypistArtHeader = "<!DOCTYPE html>\n<html lang=\"ja\">\n<body>\n<pre>";
+    public static final String TypistArtHeader = "<!DOCTYPE html>\n<html lang=\"ja\">\n<body>\n<pre>";
 
     /**
      * The HTML footer.
      */
-    public static String TypistArtFooter = "</pre>\n</body>\n</html>\n";
+    public static final String TypistArtFooter = "</pre>\n</body>\n</html>\n";
 
     /**
      * The filename for the typist art output.
      */
-    public static String TypistArtFileName = "typistArt";
+    public static final String TypistArtFileName = "typistArt";
 
     /**
      * The name of the font to be used.
      */
-    public static String FontName = "Noto Sans JP";
+    public static final String FontName = "Noto Sans JP";
 
     /**
      * The file path for the font file.
      */
-    public static String FontFilePath = "./resource/NotoSansJP-Regular.otf";
+    public static final String FontFilePath = "./resource/NotoSansJP-Regular.otf";
 
     /**
      * Font settings for the image data of full-width characters.
