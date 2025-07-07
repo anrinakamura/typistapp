@@ -1,6 +1,5 @@
 package app.typist
 
-//import utility.ColorUtility
 import java.awt.Point
 import java.awt.image.BufferedImage
 
@@ -24,11 +23,11 @@ class Element(
     /** The average luminance of the image piece. */
     var luminance: Double = 0.0
 
-    /** The distance related to the correlation coefficient. */
-    var distance: Double? = null
-
-    /** The correlation coefficient. */
-    var coefficient: Double? = null
+//    /** The distance related to the correlation coefficient. */
+//    var distance: Double? = null
+//
+//    /** The correlation coefficient. */
+//    var coefficient: Double? = null
 
     /** Secondary constructor for an instance with an image and a character. */
     constructor(anImage: BufferedImage, aCharacter: Char) : this(anImage, aCharacter, null)
@@ -44,21 +43,21 @@ class Element(
     val y: Int?
         get() = location?.y
 
-//    init {
-//        val width = piece.width
-//        val totalPixels = width * piece.height
-//
-//        // Calculate features (luminance of each pixel) and store them.
-//        val characteristicsList = (0 until totalPixels).map { i ->
-//            val px = i % width
-//            val py = i / width
-//            ColorUtility.luminanceFromRGB(piece.getRGB(px, py))
-//        }
-//        this.characteristics = characteristicsList
-//
-//        // Calculate the average luminance and store it.
-//        this.luminance = characteristicsList.average()
-//    }
+    init {
+        val width = piece.width
+        val totalPixels = width * piece.height
+
+        // Calculate features (luminance of each pixel) and store them.
+        val characteristicsList: List<Double> = (0 until totalPixels).map { i ->
+            val px = i % width
+            val py = i / width
+            ColorUtility.luminanceFromRGB(piece.getRGB(px, py))
+        }
+        this.characteristics = characteristicsList
+
+        // Calculate the average luminance and store it.
+        this.luminance = characteristicsList.average()
+    }
 
     /**
      * Normalizes the luminance and features based on a given range.
@@ -88,15 +87,19 @@ class Element(
         this.location = Point(x, y)
     }
 
-//    /**
-//     * Returns the string representation of this instance.
-//     */
-//    override fun toString(): String {
-//        val locationStr = location?.let { "(${it.x}, ${it.y})" } ?: "null"
-//        val coefficientStr = coefficient?.let { "%.4f".format(it) } ?: "null"
-//        val distanceStr = distance?.let { "%.4f".format(it) } ?: "null"
-//
-//        return "Element(character=$character, location=$locationStr, luminance=%.4f".format(luminance) +
-//                ", coefficient=$coefficientStr, distance=$distanceStr)"
-//    }
+    /**
+     * Returns the string representation of this instance.
+     */
+    override fun toString(): String {
+        // val locationStr = location?.let { "(${it.x}, ${it.y})" } ?: "null"
+        // val coefficientStr = coefficient?.let { "%.4f".format(it) } ?: "null"
+        // val distanceStr = distance?.let { "%.4f".format(it) } ?: "null"
+
+        val locationStr = location ?: "null"
+        val luminanceStr = luminance.let { "%.4f".format(it) }
+
+        // return "Element(character=$character, location=$locationStr, luminance=%.4f".format(luminance) +
+        //         ", coefficient=$coefficientStr, distance=$distanceStr)"
+        return "Element(character=$character, location=$locationStr, luminance=$luminanceStr)"
+    }
 }

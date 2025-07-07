@@ -16,7 +16,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21) // JVM_11)
         }
     }
     
@@ -82,12 +82,12 @@ kotlin {
 
 android {
     namespace = "app.typist"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = 35 // libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "app.typist"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        minSdk = 26 // libs.versions.android.minSdk.get().toInt()
+        targetSdk = 35 // libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
     }
@@ -102,8 +102,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21 // 11
+        targetCompatibility = JavaVersion.VERSION_21 // 11
     }
 }
 
