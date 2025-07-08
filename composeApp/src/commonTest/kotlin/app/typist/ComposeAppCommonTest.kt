@@ -21,12 +21,4 @@ class ComposeAppCommonTest {
 
         assertContentEquals(expected, actual)
     }
-
-    @Test
-    fun typistModel_constructor() {
-        val aFile = File("example.txt")
-        val aModel = TypistModel(aFile)
-        assertNotNull(aModel)
-        println("construct typist model")
-    }
 }

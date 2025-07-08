@@ -1,12 +1,5 @@
 package app.typist
 
-//import condition.Condition
-//import condition.ValueHolder
-//import mvc.Model
-//import mvc.View
-//import utility.ColorUtility
-//import utility.FileUtility
-//import utility.ImageUtility
 import java.awt.Font
 import java.awt.FontFormatException
 import java.awt.Graphics2D
@@ -20,15 +13,13 @@ import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import javax.swing.SwingUtilities
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * A class that serves as the Model (M) in MVC. Specializes in data management.
  *
  * @param aFile The text file containing full-width characters.
  */
-class TypistModel(aFile: File) { // : Model() {
+class TypistModel(private val typesetChars: List<Char>) {
 
     /** The number of characters per line in the typist art. */
     var typingLength: Int? = null
@@ -48,8 +39,8 @@ class TypistModel(aFile: File) { // : Model() {
     /** The number of lines in the typist art. */
     private var numberOfLines: Int? = null
 
-    /** A collection of full-width characters. */
-    private var typesetChars: List<Char> = emptyList()
+    // /** A collection of full-width characters. */
+    // private var typesetChars: List<Char> = emptyList()
 
     /** A collection of Elements for the full-width characters. */
     private var typesetElements: List<Element> = mutableListOf()
@@ -72,10 +63,10 @@ class TypistModel(aFile: File) { // : Model() {
     /** The current frame index of the animation. */
     private var animationIndex: Int = 0
 
-    init {
-        // Read the file of full-width characters.
-        this.typesetChars = this.readTextFile(aFile)
-    }
+    // init {
+    //     // Read the file of full-width characters.
+    //     this.typesetChars = this.readTextFile(aFile)
+    // }
 
     /**
      * Initializes the fields.
