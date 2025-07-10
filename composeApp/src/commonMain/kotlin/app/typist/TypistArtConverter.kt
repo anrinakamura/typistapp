@@ -11,6 +11,7 @@ import kotlin.math.sqrt
 
 const val DOUBLE_ALMOST_ZERO = 1e-12
 const val NUM_OF_CANDIDATES = 16
+const val RESOURCE_PATH = "files/typeset_elements.json"
 
 @Serializable
 data class TypesetElement(
@@ -30,15 +31,9 @@ class TypistArtConverter(
 ) {
 
     fun convert(anImage: ImageBitmap): String {
-        // val i = imageResource(resource = Res.drawable.resized_monalisa)
-        // val anImage = imageBytes.decodeToImageBitmap()
-
-        val imageWidth = anImage.width;
-        val imageHeight = anImage.height;
-
         val columns = 32
-        val size = imageWidth / columns
-        val lines = imageHeight / size
+        val size = anImage.width / columns
+        val lines = anImage.height / size
 
         val pixelMap = anImage.toPixelMap()
 
@@ -236,7 +231,6 @@ class TypistArtConverter(
 }
 
 suspend fun readResourceFile(): List<TypesetElement> {
-    // val jsonString = Res.readBytes("files/sample_element.json").decodeToString()
-    val jsonString = Res.readBytes("files/typeset_elements.json").decodeToString()
+    val jsonString = Res.readBytes(RESOURCE_PATH).decodeToString()
     return Json.decodeFromString<List<TypesetElement>>(jsonString)
 }
