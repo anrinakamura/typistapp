@@ -1,5 +1,6 @@
 package app.typist
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.PixelMap
 import androidx.compose.ui.graphics.decodeToImageBitmap
@@ -31,8 +32,6 @@ class TypistArtConverter(
         // val i = imageResource(resource = Res.drawable.resized_monalisa)
         // val anImage = imageBytes.decodeToImageBitmap()
 
-        // Separate image bytes into image elements.
-        // TODO: update
         val imageWidth = anImage.width;
         val imageHeight = anImage.height;
 
@@ -42,17 +41,33 @@ class TypistArtConverter(
 
         val pixelMap = anImage.toPixelMap()
 
+        // Separate image bytes into image elements.
+        val pictureElements = mutableListOf<PictureElement>()
+
         for (y in 0 until lines) {
             for (x in 0 until columns) {
                 for (offsetY in 0..size) {
+
+                    // val characteristic = mutableListOf<Double>()
+                    val colors = mutableListOf<Color>()
+
                     for (offsetX in 0..size) {
                         val color = pixelMap[x * size + offsetX, y * size + offsetY]
-                        val luminance = 0.2126f * color.red + 0.7152f * color.green + 0.0722f * color.blue
-                        println("luminance: $luminance")
+                        colors.add(color)
+                        // val luminance = 0.2126f * color.red + 0.7152f * color.green + 0.0722f * color.blue
+                        // println("luminance: $luminance")
                     }
+
+                    val characteristic = colors.map { it.toLuminance() }
+                    val luminance = characteristic.average()
+                    pictureElements.add(PictureElement(luminance, characteristic))
+                    println("picture element ($x, $y): $luminance")
                 }
             }
         }
+
+        // Normalize picture elements.
+        // TODO: implement
 
         // Search the most similar typeset for each elements.
 
@@ -60,12 +75,19 @@ class TypistArtConverter(
         return "typist-art".toString()
     }
 
+    private fun Color.toLuminance(): Double {
+        // TODO: update
+        return (0.2126f * this.red + 0.7152f * this.green + 0.0722f * this.blue).toDouble()
+    }
+
     private fun pictureElements() {
         // divide an image into blocks
         // normalize
     }
 
-    private fun searchTypesetElement() {}
+    private fun searchTypesetElement() {
+
+    }
 
     private fun closestLuminanceIndex() {}
 
