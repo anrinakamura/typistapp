@@ -18,22 +18,21 @@ const val RESOURCE_PATH = "files/typeset_elements.json"
 data class TypesetElement(
     val character: String,
     val luminance: Double,
-    val characteristic: List<Double>
+    val characteristic: List<Double>,
 )
 
 data class PictureElement(
     var luminance: Double,
-    var characteristic: MutableList<Double>
+    var characteristic: MutableList<Double>,
 )
 
 class TypistArtConverter(
     // Sorted by luminance.
-    private val typesetElements: List<TypesetElement>
+    private val typesetElements: List<TypesetElement>,
 ) {
-
     fun convert(anImage: ImageBitmap): String {
         val tmp = typesetElements.size
-        println("TypesetElement: ${tmp}")
+        println("TypesetElement: $tmp")
 
         val columns = COLUMNS
         val size = anImage.width / columns
@@ -52,7 +51,7 @@ class TypistArtConverter(
                 for (offsetY in 0 until size) {
                     for (offsetX in 0 until size) {
                         val px = x * size + offsetX
-                        val py  = y * size + offsetY
+                        val py = y * size + offsetY
 
                         val color = pixelMap[px, py]
                         colors.add(color)
@@ -117,7 +116,10 @@ class TypistArtConverter(
         return
     }
 
-    private fun PictureElement.normalized(min: Double, max: Double) {
+    private fun PictureElement.normalized(
+        min: Double,
+        max: Double,
+    ) {
         val range = max - min
         if (range < DOUBLE_ALMOST_ZERO) {
             this.luminance = 0.0
@@ -153,7 +155,7 @@ class TypistArtConverter(
         }
 
         // STEP 3: from the candidates, find the best match using pixel-by-pixel correlation.
-        val result =  bestMatchElement(pictureElement, candidates)
+        val result = bestMatchElement(pictureElement, candidates)
         // println("search-typeset: ${result.character}")
         return result
     }
@@ -177,7 +179,10 @@ class TypistArtConverter(
         }
     }
 
-    private fun bestMatchElement(target: PictureElement, candidates: List<TypesetElement>): TypesetElement {
+    private fun bestMatchElement(
+        target: PictureElement,
+        candidates: List<TypesetElement>,
+    ): TypesetElement {
         var max = -1.0
         var best: TypesetElement? = null
 
@@ -193,12 +198,15 @@ class TypistArtConverter(
         }
 
         val default = TypesetElement("　", 0.0, emptyList())
-        val result = best ?:default
+        val result = best ?: default
         // println("best-match: ${result.character}")
         return result
     }
 
-    private fun correlation(xValues: List<Double>, yValues: List<Double>): Double? {
+    private fun correlation(
+        xValues: List<Double>,
+        yValues: List<Double>,
+    ): Double? {
         if (xValues.size != yValues.size || xValues.isEmpty()) {
             return null
         }
