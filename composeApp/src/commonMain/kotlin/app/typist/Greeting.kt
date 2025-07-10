@@ -1,8 +1,8 @@
 package app.typist
 
-import typistapp.composeapp.generated.resources.Res
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import typistapp.composeapp.generated.resources.Res
 
 class Greeting {
     private val platform = getPlatform()
