@@ -34,7 +34,7 @@ fun App() {
 
             LaunchedEffect(typesetElements, anImage) {
                 if (typesetElements.isNotEmpty()) {
-                    result = TypistArtConverter(typesetElements).convert(anImage)
+                    result = TypistArtConverter(typesetElements).convert(32, anImage)
                 } else {
                     println("empty typeset list")
                 }

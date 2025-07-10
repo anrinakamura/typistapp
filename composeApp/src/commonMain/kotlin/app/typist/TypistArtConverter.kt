@@ -9,7 +9,6 @@ import typistapp.composeapp.generated.resources.Res
 import kotlin.math.abs
 import kotlin.math.sqrt
 
-const val COLUMNS = 32
 const val DOUBLE_ALMOST_ZERO = 1e-12
 const val NUM_OF_CANDIDATES = 16
 const val RESOURCE_PATH = "files/typeset_elements.json"
@@ -30,11 +29,13 @@ class TypistArtConverter(
     // Sorted by luminance.
     private val typesetElements: List<TypesetElement>,
 ) {
-    fun convert(anImage: ImageBitmap): String {
+    fun convert(
+        columns: Int,
+        anImage: ImageBitmap,
+    ): String {
         val tmp = typesetElements.size
         println("TypesetElement: $tmp")
 
-        val columns = COLUMNS
         val size = anImage.width / columns
         val lines = anImage.height / size
         println("PictureElement: columns: $columns, lines: $lines, size: $size")
@@ -113,7 +114,6 @@ class TypistArtConverter(
         val max = this.maxOf { it.luminance }
 
         this.forEach { it.normalized(min, max) }
-        return
     }
 
     private fun PictureElement.normalized(
@@ -244,6 +244,6 @@ class TypistArtConverter(
 }
 
 suspend fun readResourceFile(): List<TypesetElement> {
-    val jsonString = Res.readBytes("files/typeset_elements.json").decodeToString()
+    val jsonString = Res.readBytes(RESOURCE_PATH).decodeToString()
     return Json.decodeFromString<List<TypesetElement>>(jsonString)
 }
