@@ -16,15 +16,17 @@ data class PictureElement(
     val characteristic: List<Double>
 )
 
-class TypistArtConverter(private val typesetElements: List<Typeset>) {
-
-    
+class TypistArtConverter(
+    // Sorted typeset list.
+    private val typesetElements: List<Typeset>
+) {
 
     fun convert(length: Int, imageBytes: ByteArray): String {
         // Separate image bytes into image elements.
 
         // Search the most similar typeset for each elements.
 
+        // TODO: update
         return "typist-art".toString()
     }
 
