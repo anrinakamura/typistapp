@@ -1,0 +1,22 @@
+[
+  {
+    "character": "A",
+    "luminance": 1.0,
+    "characteristic": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  {
+    "character": "B",
+    "luminance": 0.5,
+    "characteristic": [
+      1.0,
+      0.75,
+      0.25,
+      0.0
+    ]
+  }
+]
