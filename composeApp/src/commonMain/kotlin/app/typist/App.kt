@@ -34,42 +34,21 @@ fun App() {
 
             val anImage = imageResource(Res.drawable.resized_monalisa)
             var typesetElements by remember { mutableStateOf(emptyList<TypesetElement>()) }
+            var result by remember { mutableStateOf<String>("") }
+
             LaunchedEffect(Unit) {
                 typesetElements = readResourceFile()
             }
-            // typesetElements.forEach {
-            //     Text(it.character)
-            // }
 
-            val converter = TypistArtConverter(typesetElements).convert(anImage)
-            Text(converter)
+            LaunchedEffect(typesetElements, anImage) {
+                if (typesetElements.isNotEmpty()) {
+                    result = TypistArtConverter(typesetElements).convert(anImage)
+                    
+                } else {
+                    println("empty typeset list")
+                }
+            }
 
-//            var sample by remember { mutableStateOf(emptyList<SampleData>()) }
-//            LaunchedEffect(Unit) {
-//                sample = getSampleData()
-//            }
-//            sample.forEach {
-//                Text(it.character)
-//            }
-
-//            Button(onClick = { showContent = !showContent }) {
-//                Text("Click me!")
-//            }
-//            AnimatedVisibility(showContent) {
-//                var greeting by remember { mutableStateOf("Loading...") }
-//                LaunchedEffect(Unit) {
-//                    greeting = try {
-//                        Greeting().greet()
-//                    } catch (e: Exception) {
-//                        "Error: loading JSON: ${e.message}"
-//                    }
-//                }
-//                // val greeting = remember { Greeting().greet() }
-//                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-//                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-//                    Text("Compose: $greeting")
-//                }
-//            }
         }
     }
 }

@@ -9,6 +9,7 @@ import typistapp.composeapp.generated.resources.Res
 import kotlin.math.abs
 import kotlin.math.sqrt
 
+const val COLUMNS = 32
 const val DOUBLE_ALMOST_ZERO = 1e-12
 const val NUM_OF_CANDIDATES = 16
 const val RESOURCE_PATH = "files/typeset_elements.json"
@@ -22,7 +23,7 @@ data class TypesetElement(
 
 data class PictureElement(
     var luminance: Double,
-    val characteristic: List<Double>
+    var characteristic: MutableList<Double>
 )
 
 class TypistArtConverter(
@@ -31,9 +32,13 @@ class TypistArtConverter(
 ) {
 
     fun convert(anImage: ImageBitmap): String {
-        val columns = 32
+        val tmp = typesetElements.size
+        println("TypesetElement: ${tmp}")
+
+        val columns = COLUMNS
         val size = anImage.width / columns
         val lines = anImage.height / size
+        println("PictureElement: columns: $columns, lines: $lines, size: $size")
 
         val pixelMap = anImage.toPixelMap()
 
@@ -42,18 +47,21 @@ class TypistArtConverter(
 
         for (y in 0 until lines) {
             for (x in 0 until columns) {
-                for (offsetY in 0..size) {
-                    val colors = mutableListOf<Color>()
-                    for (offsetX in 0..size) {
-                        val color = pixelMap[x * size + offsetX, y * size + offsetY]
+                val colors = mutableListOf<Color>()
+
+                for (offsetY in 0 until size) {
+                    for (offsetX in 0 until size) {
+                        val px = x * size + offsetX
+                        val py  = y * size + offsetY
+
+                        val color = pixelMap[px, py]
                         colors.add(color)
                     }
-
-                    val characteristic = colors.map { it.toLuminance() }
-                    val luminance = characteristic.average()
-                    pictureElements.add(PictureElement(luminance, characteristic))
-                    println("picture element ($x, $y): $luminance")
                 }
+                val characteristic = colors.map { it.toLuminance() }.toMutableList()
+                val luminance = characteristic.average()
+                pictureElements.add(PictureElement(luminance, characteristic))
+                // println("picture element ($x, $y): $luminance")
             }
         }
 
@@ -74,16 +82,16 @@ class TypistArtConverter(
                 aStringBuilder.clear()
             }
         }
-        if (result.isNotEmpty()) {
+        if (aStringBuilder.isNotEmpty()) {
             result.add(aStringBuilder.toString())
         }
 
         for (aString in result) {
-            println(aString)
+            println("Typist-art: $aString")
         }
 
         // TODO: update
-        return "typist-art".toString()
+        return result.joinToString("\n")
     }
 
     private fun Color.toLuminance(): Double {
@@ -101,36 +109,29 @@ class TypistArtConverter(
         return doubleArrayOf(y, u, v)
     }
 
-    private fun List<PictureElement>.normalized() {
-        var min = Double.MAX_VALUE
-        var max = Double.MIN_VALUE
+    private fun MutableList<PictureElement>.normalized() {
+        val min = this.minOf { it.luminance }
+        val max = this.maxOf { it.luminance }
 
-        for (element in this) {
-            if (element.luminance < min) {
-                min = element.luminance
-            }
-            if (element.luminance > max) {
-                max = element.luminance
-            }
-        }
-
-        this.map { it.normalized(min, max) }
+        this.forEach { it.normalized(min, max) }
         return
     }
 
     private fun PictureElement.normalized(min: Double, max: Double) {
-        if (max - min < DOUBLE_ALMOST_ZERO) {
-            this.characteristic.map { 0.0 }
+        val range = max - min
+        if (range < DOUBLE_ALMOST_ZERO) {
             this.luminance = 0.0
+            for (i in this.characteristic.indices) {
+                this.characteristic[i] = 0.0
+            }
+            return
         }
 
-        this.characteristic.map { (it - min) / (max - min) }
-        this.luminance = (this.luminance - min) / (max - min)
-
-        return
+        this.luminance = (this.luminance - min) / range
+        for (i in this.characteristic.indices) {
+            this.characteristic[i] = (this.characteristic[i] - min) / range
+        }
     }
-
-
 
     private fun List<PictureElement>.toTypistArt(): List<TypesetElement> {
         val elements = this.map { searchTypesetElement(it) }
@@ -152,7 +153,9 @@ class TypistArtConverter(
         }
 
         // STEP 3: from the candidates, find the best match using pixel-by-pixel correlation.
-        return bestMatchElement(pictureElement, candidates)
+        val result =  bestMatchElement(pictureElement, candidates)
+        // println("search-typeset: ${result.character}")
+        return result
     }
 
     private fun closestLuminanceIndex(target: Double): Int {
@@ -190,7 +193,9 @@ class TypistArtConverter(
         }
 
         val default = TypesetElement("　", 0.0, emptyList())
-        return best ?:default
+        val result = best ?:default
+        // println("best-match: ${result.character}")
+        return result
     }
 
     private fun correlation(xValues: List<Double>, yValues: List<Double>): Double? {
@@ -231,6 +236,6 @@ class TypistArtConverter(
 }
 
 suspend fun readResourceFile(): List<TypesetElement> {
-    val jsonString = Res.readBytes(RESOURCE_PATH).decodeToString()
+    val jsonString = Res.readBytes("files/typeset_elements.json").decodeToString()
     return Json.decodeFromString<List<TypesetElement>>(jsonString)
 }
