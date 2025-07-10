@@ -243,6 +243,7 @@ class TypistArtConverter(
     }
 }
 
+// TODO: move to the appropriate class
 suspend fun readResourceFile(): List<TypesetElement> {
     val jsonString = Res.readBytes(RESOURCE_PATH).decodeToString()
     return Json.decodeFromString<List<TypesetElement>>(jsonString)
