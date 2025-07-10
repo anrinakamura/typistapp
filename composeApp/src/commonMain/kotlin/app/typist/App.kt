@@ -12,11 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import org.jetbrains.compose.resources.imageResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import typistapp.composeapp.generated.resources.Res
 import typistapp.composeapp.generated.resources.compose_multiplatform
+import typistapp.composeapp.generated.resources.resized_monalisa
 
 @Composable
 @Preview
@@ -30,13 +32,22 @@ fun App() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            var sample by remember { mutableStateOf(emptyList<SampleData>()) }
+            val anImage = imageResource(Res.drawable.resized_monalisa)
+            var typesetElements by remember { mutableStateOf(emptyList<Typeset>()) }
             LaunchedEffect(Unit) {
-                sample = getSampleData()
+                typesetElements = readResourceFile()
             }
-            sample.forEach {
-                Text(it.character)
-            }
+
+            val converter = TypistArtConverter(typesetElements).convert(anImage)
+            Text(converter)
+
+//            var sample by remember { mutableStateOf(emptyList<SampleData>()) }
+//            LaunchedEffect(Unit) {
+//                sample = getSampleData()
+//            }
+//            sample.forEach {
+//                Text(it.character)
+//            }
 
 //            Button(onClick = { showContent = !showContent }) {
 //                Text("Click me!")
