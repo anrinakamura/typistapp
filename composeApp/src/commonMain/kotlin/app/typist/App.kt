@@ -33,10 +33,13 @@ fun App() {
         ) {
 
             val anImage = imageResource(Res.drawable.resized_monalisa)
-            var typesetElements by remember { mutableStateOf(emptyList<Typeset>()) }
+            var typesetElements by remember { mutableStateOf(emptyList<TypesetElement>()) }
             LaunchedEffect(Unit) {
                 typesetElements = readResourceFile()
             }
+            // typesetElements.forEach {
+            //     Text(it.character)
+            // }
 
             val converter = TypistArtConverter(typesetElements).convert(anImage)
             Text(converter)
