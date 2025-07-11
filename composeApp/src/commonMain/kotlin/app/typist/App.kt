@@ -1,18 +1,29 @@
 package app.typist
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.imageResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import typistapp.composeapp.generated.resources.NotoSansJP_Regular
 import typistapp.composeapp.generated.resources.Res
 import typistapp.composeapp.generated.resources.resized_monalisa
 
@@ -24,7 +35,7 @@ sealed class AppUiState {
     ) : AppUiState()
 
     data class Success(
-        val typistArt: String,
+        val typistArt: List<String>,
     ) : AppUiState()
 
     data class Error(
@@ -51,45 +62,99 @@ fun App() {
             }
         }
 
-        Column(
-            modifier =
-                Modifier
-                    .safeContentPadding()
-                    .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            when (val state = uiState) {
-                is AppUiState.Loading -> {
-                    CircularProgressIndicator()
-                }
-                is AppUiState.Generating -> {
-                    val anImage = imageResource(Res.drawable.resized_monalisa)
-                    val result = TypistArtConverter(state.typesetElements).convert(32, anImage)
-                    uiState = AppUiState.Success(result)
-                }
-                is AppUiState.Success -> {
-                    // TODO: animate the typist-art
-                    Text(state.typistArt)
-                }
-                is AppUiState.Error -> {
-                    Text(state.message)
-                }
+        // TODO: move to ViewModel
+        when (val state = uiState) {
+            is AppUiState.Loading -> {
+                CircularProgressIndicator()
             }
+            is AppUiState.Generating -> {
+                // TODO: move to ViewModel
+                val anImage = imageResource(Res.drawable.resized_monalisa)
+                val result = TypistArtConverter(state.typesetElements).convert(32, anImage)
+                uiState = AppUiState.Success(result)
+            }
+            is AppUiState.Success -> {
+                // TODO: animate the typist-art
+                // PrintTypistArt(state.typistArt)
+                AnimateTypistArt(state.typistArt.joinToString("\n"))
+            }
+            is AppUiState.Error -> {
+                Text(state.message)
+            }
+        }
+    }
+}
 
-//            val anImage = imageResource(Res.drawable.resized_monalisa)
-//            var typesetElements by remember { mutableStateOf(emptyList<TypesetElement>()) }
-//            var result by remember { mutableStateOf<String>("") }
+@Composable
+fun AnimateTypistArt(text: String) {
+    // https://developer.android.com/develop/ui/compose/quick-guides/content/animate-text
+
+    val notoSanJP = FontFamily(Font(Res.font.NotoSansJP_Regular, FontWeight.Normal))
+
+    var subString by remember { mutableStateOf("") }
+    val delayInMs = 10L
+
+    LaunchedEffect(text) {
+        for (i in 1..text.length) {
+            subString = text.substring(0, i)
+            delay(delayInMs)
+        }
+    }
+
+    Text(
+        text = subString,
+        modifier = Modifier,
+        fontSize = 12.sp,
+        fontFamily = notoSanJP, // FontFamily.Monospace,
+        lineHeight = 12.sp,
+    )
+}
+
+@Composable
+fun PrintTypistArt(lines: List<String>) {
+    val notoSanJP = FontFamily(Font(Res.font.NotoSansJP_Regular, FontWeight.Normal))
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+//        val maxWidth = constraints.maxWidth // maxWidth.toDouble()
+//        val maxHeight = constraints.maxHeight // maxHeight.toDouble()
+//        val fontSizePx =
+//            minOf(
+//                // TODO: get columns from ViewModel
+//                maxWidth / 32,
+//                maxHeight / lines.size,
+//            ) * 0.99f
+//        println("maxWidth: $maxWidth, maxHeight: $maxHeight, fontSize: $fontSizePx")
 //
-//            // NOTE: LaunchEffect runs on CoroutineContext of the default thread (UI thread)
-//            LaunchedEffect(Unit) {
-//                typesetElements = readResourceFile()
-//            }
-//
-//            LaunchedEffect(typesetElements, anImage) {
-//                if (typesetElements.isNotEmpty()) {
-//                    result = TypistArtConverter(typesetElements).convert(32, anImage)
-//                } else {
-//                    println("empty typeset list")
+//        val fontSizeSp = with(LocalDensity.current) { fontSizePx.toSp() }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            // TODO: allow to use input image
+            Image(
+                painter = painterResource(Res.drawable.resized_monalisa),
+                contentDescription = "original image converted to typist-art",
+                contentScale = ContentScale.Fit,
+                // modifier = Modifier.fillMaxSize(),
+            )
+
+            BasicText(
+                text = lines.joinToString("\n"),
+//                modifier = Modifier.fillMaxWidth(),
+                style = TextStyle(fontFamily = notoSanJP),
+                maxLines = 1,
+                autoSize = TextAutoSize.StepBased(),
+            )
+
+//            Column(modifier = Modifier.fillMaxWidth().padding(0.dp)) {
+//                lines.forEach { line ->
+//                    BasicText(
+//                        text = line,
+//                         modifier = Modifier.fillMaxWidth(),
+//                        style = TextStyle(
+//                            fontFamily = FontFamily.Monospace,
+//                        ),
+//                        maxLines = 1,
+//                        autoSize = TextAutoSize.StepBased(),
+//                    )
 //                }
 //            }
         }

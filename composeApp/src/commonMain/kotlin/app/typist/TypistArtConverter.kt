@@ -32,7 +32,7 @@ class TypistArtConverter(
     fun convert(
         columns: Int,
         anImage: ImageBitmap,
-    ): String {
+    ): List<String> {
         val tmp = typesetElements.size
         println("TypesetElement: $tmp")
 
@@ -91,7 +91,7 @@ class TypistArtConverter(
         }
 
         // TODO: update
-        return result.joinToString("\n")
+        return result // .joinToString("\n")
     }
 
     private fun Color.toLuminance(): Double {
