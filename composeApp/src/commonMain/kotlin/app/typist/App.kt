@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -53,7 +54,9 @@ sealed class AppUiState {
 
 @Composable
 @Preview
-fun App() {
+fun App(
+    viewModel: TypistViewModel = viewModel { TypistViewModel() }
+) {
     MaterialTheme {
         var uiState by remember { mutableStateOf<AppUiState>(AppUiState.Loading) }
 
